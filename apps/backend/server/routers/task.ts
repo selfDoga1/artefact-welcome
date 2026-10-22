@@ -5,9 +5,9 @@ import Task from "../schemas/task";
 type Task = z.infer<typeof Task>
 
 const tasks: Task[] = [
-    // { id: crypto.randomUUID(), title: "Setup the project", description: "Initialize the monorepo with backend and frontend", createdAt: new Date().toISOString() },
-    // { id: crypto.randomUUID(), title: "Create the tRPC router", description: "Define procedures for the task entity", createdAt: new Date().toISOString() },
-    // { id: crypto.randomUUID(), title: "Build the frontend", description: "Connect the React app to the backend via tRPC", createdAt: new Date().toISOString() },
+    { id: crypto.randomUUID(), title: "Setup the project", description: "Initialize the monorepo with backend and frontend", createdAt: new Date().toISOString() },
+    { id: crypto.randomUUID(), title: "Create the tRPC router", description: "Define procedures for the task entity", createdAt: new Date().toISOString() },
+    { id: crypto.randomUUID(), title: "Build the frontend", description: "Connect the React app to the backend via tRPC", createdAt: new Date().toISOString() },
 ]
 
 export const taskRouter = router({

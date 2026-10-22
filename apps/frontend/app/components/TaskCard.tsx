@@ -42,7 +42,7 @@ export default function TaskCard({ task, onEdit, onDelete, isPending }: { task: 
             )}
 
             <span style={{ fontSize: 12, color: "#9ca3af" }}>
-                {new Date(task.createdAt).toLocaleDateString()}
+                {new Date(task.createdAt).toLocaleString()}
             </span>
         </div>
     );

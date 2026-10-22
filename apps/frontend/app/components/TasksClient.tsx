@@ -32,10 +32,13 @@ export default function TasksClient({initialTasks} : {initialTasks: Task[]}) {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {list.data?.length === 0 && (
+                {list.isFetching && (
+                    <p style={{ color: "#9ca3af", fontSize: 14, textAlign: "center", padding: "40px 0" }}>Loading...</p>
+                )}
+                {!list.isFetching && list.data?.length === 0 && (
                     <p style={{ color: "#9ca3af", fontSize: 14, textAlign: "center", padding: "40px 0" }}>No tasks yet. Create one!</p>
                 )}
-                {list.data?.map((task) => (
+                {!list.isFetching && list.data?.map((task) => (
                     <TaskCard
                         key={task.id}
                         task={task}
