@@ -48,7 +48,7 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task, isPending }: {
                         type="text"
                         id="title"
                         name="title"
-                        required
+                        // required # Comentado para exibir a validação via backend
                         disabled={isPending}
                         placeholder="Task title"
                         defaultValue={task?.title ?? ""}

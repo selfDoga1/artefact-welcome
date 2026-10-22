@@ -8,9 +8,9 @@ import { z } from "zod"
 
 type Task = z.infer<typeof TaskSchema>
 
-const useTaskActions = () => {
+const useTaskActions = (initialTasks?: Task[]) => {
     const { isOpen, open, close } = useModal()
-    const { list, create, update, remove } = useTaskService()
+    const { list, create, update, remove } = useTaskService(initialTasks)
     const [taskId, setTaskId] = useState<string | null>(null)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
 

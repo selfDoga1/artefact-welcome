@@ -1,9 +1,13 @@
+import { trpcServer } from "@/lib/trpc/server"
 import TasksClient from "./components/TasksClient"
 
-export default function Home() {
+export default async function Home() {
+
+    const tasks = await trpcServer.tasks.list()
+
     return (
         <main>
-            <TasksClient />
+            <TasksClient initialTasks={tasks} />
         </main>
     )
 }

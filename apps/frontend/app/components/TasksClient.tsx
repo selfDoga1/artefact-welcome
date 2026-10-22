@@ -2,9 +2,13 @@
 import useTaskActions from "../hooks/useTaskActions"
 import TaskModalForm from "./TaskModalForm"
 import TaskCard from "./TaskCard"
+import TaskSchema from "@backend/server/schemas/task";
+import { z } from "zod";
 
-export default function TasksClient() {
-    const { list, isOpen, editingTask, handleOpenModal, handleClose, handleSubmit, handleDelete, isPending} = useTaskActions()
+type Task = z.infer<typeof TaskSchema>;
+
+export default function TasksClient({initialTasks} : {initialTasks: Task[]}) {
+    const { list, isOpen, editingTask, handleOpenModal, handleClose, handleSubmit, handleDelete, isPending} = useTaskActions(initialTasks)
 
     return (
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }}>

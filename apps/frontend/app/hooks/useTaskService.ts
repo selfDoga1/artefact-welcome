@@ -5,10 +5,12 @@ import { z } from "zod"
 
 type Task = z.infer<typeof TaskSchema>
 
-const useTaskService = () => {
+const useTaskService = (initialTasks?: Task[]) => {
     const utils = trpc.useUtils()
 
-    const list = trpc.tasks.list.useQuery()
+    const list = trpc.tasks.list.useQuery(undefined, {
+        placeholderData: initialTasks,
+    })
 
     const create = trpc.tasks.create.useMutation({
         onSuccess: () => utils.tasks.list.invalidate()
