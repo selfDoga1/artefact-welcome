@@ -5,7 +5,7 @@ import { z } from "zod"
 
 type Task = z.infer<typeof TaskSchema>
 
-const useTasks = () => {
+const useTaskService = () => {
     const utils = trpc.useUtils()
 
     const list = trpc.tasks.list.useQuery()
@@ -30,4 +30,4 @@ const useTasks = () => {
     }
 }
 
-export default useTasks
+export default useTaskService

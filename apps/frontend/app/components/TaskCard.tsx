@@ -13,7 +13,7 @@ const buttonStyle = {
     background: "white",
 }
 
-export default function TaskCard({ task, onEdit, onDelete }: { task: Task, onEdit: (task: Task) => void, onDelete: () => void }) {
+export default function TaskCard({ task, onEdit, onDelete, isPending }: { task: Task, onEdit: (task: Task) => void, onDelete: () => void, isPending?: boolean }) {
     return (
         <div
             style={{
@@ -31,7 +31,7 @@ export default function TaskCard({ task, onEdit, onDelete }: { task: Task, onEdi
                 </h3>
                 <div style={{ display: "flex", gap: 8 }}>
                     <button onClick={() => onEdit(task)} style={{ ...buttonStyle, color: "#2563eb" }}>Edit</button>
-                    <button onClick={onDelete} style={{ ...buttonStyle, color: "#dc2626" }}>Delete</button>
+                    <button onClick={onDelete} disabled={isPending} style={{ ...buttonStyle, color: "#dc2626", opacity: isPending ? 0.6 : 1, cursor: isPending ? "not-allowed" : "pointer" }}>Delete</button>
                 </div>
             </div>
 

@@ -5,11 +5,12 @@ import { z } from "zod"
 
 type Task = z.infer<typeof TaskSchema>
 
-function TaskModalForm({ isOpen, onClose, onSubmit, task }: {
+function TaskModalForm({ isOpen, onClose, onSubmit, task, isPending }: {
     isOpen: boolean,
     onClose: () => void,
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => void,
     task?: Task | null,
+    isPending?: boolean,
 }) {
     return (
         <Modal
@@ -36,7 +37,7 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task }: {
         >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 600 }}>{task ? "Edit Task" : "New Task"}</h2>
-                <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: "#6b7280" }}>✕</button>
+                <button onClick={onClose} disabled={isPending} style={{ background: "none", border: "none", cursor: isPending ? "not-allowed" : "pointer", fontSize: 20, color: "#6b7280" }}>✕</button>
             </div>
 
             <form onSubmit={onSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -47,11 +48,12 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task }: {
                         type="text"
                         id="title"
                         name="title"
-                        // required
+                        required
+                        disabled={isPending}
                         placeholder="Task title"
                         defaultValue={task?.title ?? ""}
                         key={task?.id ?? "new"}
-                        style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 14, outline: "none" }}
+                        style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 14, outline: "none", opacity: isPending ? 0.6 : 1 }}
                     />
                 </div>
 
@@ -60,11 +62,12 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task }: {
                     <textarea
                         id="description"
                         name="description"
+                        disabled={isPending}
                         placeholder="Task description"
                         rows={4}
                         defaultValue={task?.description ?? ""}
                         key={task?.id ? `${task.id}-desc` : "new-desc"}
-                        style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 14, outline: "none", resize: "vertical" }}
+                        style={{ padding: "8px 12px", borderRadius: 6, border: "1px solid #d1d5db", fontSize: 14, outline: "none", resize: "vertical", opacity: isPending ? 0.6 : 1 }}
                     />
                 </div>
 
@@ -72,15 +75,17 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task }: {
                     <button
                         type="button"
                         onClick={onClose}
-                        style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid #d1d5db", background: "white", fontSize: 14, cursor: "pointer", color: "#374151" }}
+                        disabled={isPending}
+                        style={{ padding: "8px 16px", borderRadius: 6, border: "1px solid #d1d5db", background: "white", fontSize: 14, cursor: isPending ? "not-allowed" : "pointer", color: "#374151", opacity: isPending ? 0.6 : 1 }}
                     >
                         Cancel
                     </button>
                     <button
                         type="submit"
-                        style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#2563eb", color: "white", fontSize: 14, cursor: "pointer", fontWeight: 500 }}
+                        disabled={isPending}
+                        style={{ padding: "8px 16px", borderRadius: 6, border: "none", background: "#2563eb", color: "white", fontSize: 14, cursor: isPending ? "not-allowed" : "pointer", fontWeight: 500, opacity: isPending ? 0.6 : 1 }}
                     >
-                        {task ? "Update" : "Create"}
+                        {isPending ? "Saving..." : task ? "Update" : "Create"}
                     </button>
                 </div>
 
