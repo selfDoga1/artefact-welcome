@@ -16,6 +16,7 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task, isPending }: {
         <Modal
             isOpen={isOpen}
             onRequestClose={onClose}
+            // appElement evita o aviso do react-modal sobre acessibilidade no SSR
             appElement={typeof window !== "undefined" ? document.body : undefined}
             style={{
                 overlay: {
@@ -35,6 +36,7 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task, isPending }: {
                 },
             }}
         >
+            {/* título muda conforme o modo: edição ou criação */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h2 style={{ fontSize: 18, fontWeight: 600 }}>{task ? "Edit Task" : "New Task"}</h2>
                 <button onClick={onClose} disabled={isPending} style={{ background: "none", border: "none", cursor: isPending ? "not-allowed" : "pointer", fontSize: 20, color: "#6b7280" }}>✕</button>
@@ -48,7 +50,7 @@ function TaskModalForm({ isOpen, onClose, onSubmit, task, isPending }: {
                         type="text"
                         id="title"
                         name="title"
-                        required // Comente para exibir a validação via backend
+                        required
                         disabled={isPending}
                         placeholder="Task title"
                         defaultValue={task?.title ?? ""}

@@ -33,11 +33,14 @@ export const taskRouter = router({
 
             const { limit, cursor } = input
 
+            // o cursor aponta para o último item que o cliente já tem, então começa pelo próximo
             const startIndex = cursor
                 ? tasks.findIndex(task => task.id === cursor) + 1
                 : 0
 
             const slice = tasks.slice(startIndex, startIndex + limit)
+
+            // se o slice for menor que o limit, não há mais páginas
             const nextCursor = slice.length === limit ? slice[slice.length - 1].id : null
 
             return {tasks: slice, nextCursor}
@@ -81,6 +84,8 @@ export const taskRouter = router({
         .mutation(({ input }) => {
             const index = tasks.findIndex(task => task.id === input.id)
             if (index === -1) throw new Error('Task not found')
+                
+            // splice remove o item no lugar sem criar uma cópia do array
             tasks.splice(index, 1)
             return {success: true}
         })

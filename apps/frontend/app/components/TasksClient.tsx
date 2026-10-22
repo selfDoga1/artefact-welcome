@@ -10,10 +10,24 @@ type Task = z.infer<typeof TaskSchema>;
 type FirstPage = { tasks: Task[], nextCursor: string | null };
 
 export default function TasksClient({initialTasks} : {initialTasks: FirstPage}) {
-    const { list, fetchNextPage, hasNextPage, isFetchingNextPage, isOpen, editingTask, handleOpenModal, handleClose, handleSubmit, handleDelete, isPending} = useTaskActions(initialTasks)
+    const { 
+        list, 
+        fetchNextPage, 
+        hasNextPage, 
+        isFetchingNextPage, 
+        isOpen, 
+        editingTask, 
+        handleOpenModal, 
+        handleClose, 
+        handleSubmit, 
+        handleDelete, 
+        isPending
+    } = useTaskActions(initialTasks)
 
+    // pages é um array de páginas; flatMap junta tudo em uma lista única
     const tasks = list.data?.pages.flatMap(page => page.tasks) ?? []
 
+    // bottomRef vai no final da lista de tasks e quando ele aparece na tela, busca a próxima página
     const bottomRef = useScrollEnd(() => {
         if (hasNextPage && !isFetchingNextPage) fetchNextPage()
     })
@@ -40,6 +54,7 @@ export default function TasksClient({initialTasks} : {initialTasks: FirstPage}) 
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                {/* loading só aparece quando não há nenhuma tarefa ainda, para não sobrepor a lista existente */}
                 {list.isFetching && tasks.length === 0 && (
                     <p style={{ color: "#9ca3af", fontSize: 14, textAlign: "center", padding: "40px 0" }}>Loading...</p>
                 )}
@@ -57,6 +72,7 @@ export default function TasksClient({initialTasks} : {initialTasks: FirstPage}) 
                 ))}
             </div>
 
+            {/* elemento invisível que dispara o infinite scroll quando entra na visão do usuário */}
             <div ref={bottomRef} style={{ height: 1 }} />
 
             {isFetchingNextPage && (

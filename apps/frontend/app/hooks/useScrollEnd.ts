@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useRef } from "react"
 
+// detecta quando um elemento entra na visão do usuário e dispara uma função caso aconteça
 const useScrollEnd = (onIntersect: () => void) => {
 
     const ref = useRef<HTMLDivElement>(null)
@@ -10,6 +11,7 @@ const useScrollEnd = (onIntersect: () => void) => {
             (entries) => {
                 if (entries[0].isIntersecting) onIntersect()
             },
+            // threshold 1.0 garante que o elemento esteja totalmente visível antes de disparar
             {threshold: 1.0}
         )
 
@@ -18,6 +20,7 @@ const useScrollEnd = (onIntersect: () => void) => {
 
     }, [onIntersect])
 
+    // o ref é colocado no elemento logo após o ultimo item da lista
     return ref
 
 }

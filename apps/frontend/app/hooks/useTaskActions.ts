@@ -9,14 +9,16 @@ import { z } from "zod"
 type Task = z.infer<typeof TaskSchema>
 type FirstPage = { tasks: Task[], nextCursor: string | null }
 
+// lógica de UI das tarefas: conecta o serviço tRPC com o estado do modal e os toasts
 const useTaskActions = (initialTasks?: FirstPage) => {
     const { isOpen, open, close } = useModal()
-    const [taskId, setTaskId] = useState<string | null>(null)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
     const { list, create, update, remove } = useTaskService(initialTasks)
-
+    
+    // taskId controla se o formulário está em modo edição ou criação
+    const [taskId, setTaskId] = useState<string | null>(null)
+    
     const { fetchNextPage, hasNextPage, isFetchingNextPage } = list
-
 
     function handleOpenModal(task?: Task) {
         setTaskId(task?.id ?? null)
@@ -30,6 +32,7 @@ const useTaskActions = (initialTasks?: FirstPage) => {
         close()
     }
 
+    // o mesmo formulário serve para criar e editar: taskId decide qual mutação chamar
     function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault()
         const form = e.currentTarget
@@ -65,6 +68,7 @@ const useTaskActions = (initialTasks?: FirstPage) => {
         )
     }
 
+    // trava botões e inputs enquanto qualquer mutação estiver em andamento
     const isPending = create.isPending || update.isPending || remove.isPending
 
     return {
