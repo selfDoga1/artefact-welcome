@@ -7,12 +7,16 @@ import TaskSchema from "@backend/server/schemas/task"
 import { z } from "zod"
 
 type Task = z.infer<typeof TaskSchema>
+type FirstPage = { tasks: Task[], nextCursor: string | null }
 
-const useTaskActions = (initialTasks?: Task[]) => {
+const useTaskActions = (initialTasks?: FirstPage) => {
     const { isOpen, open, close } = useModal()
-    const { list, create, update, remove } = useTaskService(initialTasks)
     const [taskId, setTaskId] = useState<string | null>(null)
     const [editingTask, setEditingTask] = useState<Task | null>(null)
+    const { list, create, update, remove } = useTaskService(initialTasks)
+
+    const { fetchNextPage, hasNextPage, isFetchingNextPage } = list
+
 
     function handleOpenModal(task?: Task) {
         setTaskId(task?.id ?? null)
@@ -64,6 +68,10 @@ const useTaskActions = (initialTasks?: Task[]) => {
     const isPending = create.isPending || update.isPending || remove.isPending
 
     return {
+        tasks: list.data?.pages.flatMap(page => page.tasks) ?? [],
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage,
         list,
         isOpen,
         isPending,

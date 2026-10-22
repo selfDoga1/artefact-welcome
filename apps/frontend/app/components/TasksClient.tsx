@@ -1,14 +1,22 @@
 "use client"
 import useTaskActions from "../hooks/useTaskActions"
+import useScrollEnd from "../hooks/useScrollEnd"
 import TaskModalForm from "./TaskModalForm"
 import TaskCard from "./TaskCard"
 import TaskSchema from "@backend/server/schemas/task";
 import { z } from "zod";
 
 type Task = z.infer<typeof TaskSchema>;
+type FirstPage = { tasks: Task[], nextCursor: string | null };
 
-export default function TasksClient({initialTasks} : {initialTasks: Task[]}) {
-    const { list, isOpen, editingTask, handleOpenModal, handleClose, handleSubmit, handleDelete, isPending} = useTaskActions(initialTasks)
+export default function TasksClient({initialTasks} : {initialTasks: FirstPage}) {
+    const { list, fetchNextPage, hasNextPage, isFetchingNextPage, isOpen, editingTask, handleOpenModal, handleClose, handleSubmit, handleDelete, isPending} = useTaskActions(initialTasks)
+
+    const tasks = list.data?.pages.flatMap(page => page.tasks) ?? []
+
+    const bottomRef = useScrollEnd(() => {
+        if (hasNextPage && !isFetchingNextPage) fetchNextPage()
+    })
 
     return (
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "40px 24px" }}>
@@ -32,15 +40,15 @@ export default function TasksClient({initialTasks} : {initialTasks: Task[]}) {
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-                {list.isFetching && (
+                {list.isFetching && tasks.length === 0 && (
                     <p style={{ color: "#9ca3af", fontSize: 14, textAlign: "center", padding: "40px 0" }}>Loading...</p>
                 )}
-                {!list.isFetching && list.data?.length === 0 && (
+                {!list.isFetching && tasks.length === 0 && (
                     <p style={{ color: "#9ca3af", fontSize: 14, textAlign: "center", padding: "40px 0" }}>No tasks yet. Create one!</p>
                 )}
-                {!list.isFetching && list.data?.map((task) => (
+                {tasks.map((task, index) => (
                     <TaskCard
-                        key={task.id}
+                        key={index}
                         task={task}
                         onEdit={(task) => handleOpenModal(task)}
                         onDelete={() => handleDelete(task.id)}
@@ -48,6 +56,16 @@ export default function TasksClient({initialTasks} : {initialTasks: Task[]}) {
                     />
                 ))}
             </div>
+
+            <div ref={bottomRef} style={{ height: 1 }} />
+
+            {isFetchingNextPage && (
+                <p style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: 16 }}>Loading more...</p>
+            )}
+
+            {!hasNextPage && tasks.length > 0 && (
+                <p style={{ textAlign: "center", color: "#9ca3af", fontSize: 14, padding: 16 }}>No more tasks</p>
+            )}
 
             <TaskModalForm
                 isOpen={isOpen}

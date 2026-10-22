@@ -3,7 +3,7 @@ import TasksClient from "./components/TasksClient"
 
 export default async function Home() {
 
-    const tasks = await trpcServer.tasks.list()
+    const tasks = await trpcServer.tasks.list({limit: 10, cursor: null})
 
     return (
         <main>
